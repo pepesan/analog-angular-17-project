@@ -45,3 +45,7 @@ Thumbs.db
 
 # lock files
 package-lock.json
+
+# Local assistant instructions
+CLAUDE.md
+AGENTS.md
