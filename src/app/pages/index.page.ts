@@ -13,6 +13,9 @@ import {RouterLink} from "@angular/router";
       <a routerLink="/about">Go About</a>
       <a routerLink="/products/1">Producto 1</a>
       <a routerLink="/products/2">Producto 2</a>
+      <a routerLink="/ssr">Ejemplo SSR</a>
+      <a routerLink="/ssg">Ejemplo SSG</a>
+      <a routerLink="/hydration">Ejemplo Hidratación</a>
       <a routerLink="/otra_ruta">Not found1</a>
     </div>
 
