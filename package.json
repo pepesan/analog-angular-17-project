@@ -11,7 +11,9 @@
     "start": "npm run dev",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "vitest run",
+    "e2e": "cucumber-js e2e/features --require e2e/steps --require e2e/support",
+    "test:coverage": "vitest run --coverage"
   },
   "private": true,
   "dependencies": {
@@ -41,9 +43,12 @@
     "@angular/build": "^22.0.0",
     "@angular/cli": "^22.0.0",
     "@angular/compiler-cli": "^22.0.0",
+    "@cucumber/cucumber": "^12.2.0",
     "jsdom": "^31.0.1",
+    "playwright": "^1.58.2",
     "typescript": "~6.0.3",
     "vite": "^8.3.8",
+    "@vitest/coverage-v8": "^5.1.0",
     "vitest": "^5.1.0"
   }
 }
