@@ -1,47 +1,54 @@
-import { After, Before, setDefaultTimeout } from '@cucumber/cucumber';
+import { After, AfterAll, Before, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber';
 import { chromium } from 'playwright';
 import { spawn } from 'node:child_process';
+import { createWriteStream } from 'node:fs';
 
-const baseUrl = 'http://127.0.0.1:4173';
+export const baseUrl = 'http://127.0.0.1:4173';
+const serverLog = 'e2e-server.log';
 let server;
 let browser;
 
 setDefaultTimeout(30_000);
 
-Before(async function () {
+BeforeAll({ timeout: 120_000 }, async function () {
+  const log = createWriteStream(serverLog);
   server = spawn(process.execPath, ['node_modules/@angular/cli/bin/ng.js', 'serve', '--port', '4173'], {
-    stdio: 'ignore',
+    stdio: ['ignore', 'pipe', 'pipe'],
   });
-  server.on('error', (error) => {
-    throw error;
-  });
+  server.stdout.pipe(log, { end: false });
+  server.stderr.pipe(log, { end: false });
 
-  const deadline = Date.now() + 60_000;
-  while (Date.now() < deadline) {
+  const deadline = Date.now() + 90_000;
+  let ready = false;
+  while (Date.now() < deadline && !ready) {
     if (server.exitCode !== null) {
-      throw new Error(`Development server exited with code ${server.exitCode}`);
+      throw new Error(`Development server exited with code ${server.exitCode} (see ${serverLog})`);
     }
     try {
-      const response = await fetch(baseUrl);
-      if (response.ok) break;
+      ready = (await fetch(baseUrl)).ok;
     } catch {
       // The development server is not listening yet.
     }
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    if (!ready) await new Promise((resolve) => setTimeout(resolve, 500));
   }
-  if (Date.now() >= deadline) throw new Error('Development server did not become ready');
+  if (!ready) throw new Error(`Development server did not become ready (see ${serverLog})`);
 
   browser = await chromium.launch({ headless: true });
-  this.page = await browser.newPage();
+});
+
+Before(async function () {
+  this.context = await browser.newContext();
+  this.page = await this.context.newPage();
 });
 
 After(async function () {
+  await this.context?.close();
+});
+
+AfterAll(async function () {
   await browser?.close();
   if (server && server.exitCode === null) {
-    const exited = new Promise((resolve) => {
-      if (server.exitCode !== null) resolve();
-      else server.once('exit', resolve);
-    });
+    const exited = new Promise((resolve) => server.once('exit', resolve));
     server.kill('SIGTERM');
     await exited;
   }

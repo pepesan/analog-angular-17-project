@@ -3,10 +3,11 @@ import {RouterLink, RouterOutlet} from "@angular/router";
 
 @Component({
   selector: 'app-home',
-  standalone: true,
   template: `<h2>Sub</h2>
   <nav>
-    <li><a routerLink="/sub/1">Product 1</a></li>
+    <ul>
+      <li><a routerLink="/sub/1">Product 1</a></li>
+    </ul>
   </nav>
   <nav>
     <ul>

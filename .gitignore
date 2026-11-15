@@ -43,9 +43,9 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# lock files
-package-lock.json
-
 # Local assistant instructions
 CLAUDE.md
 AGENTS.md
+
+# E2E server log
+/e2e-server.log

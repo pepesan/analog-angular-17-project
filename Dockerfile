@@ -1,39 +1,25 @@
-# Etapa 1: Construcción de la aplicación Angular
-FROM node:22 AS build
-
-# Establece el directorio de trabajo
+# Etapa 1: construcción
+FROM node:22-slim AS build
 WORKDIR /app
 
-# Copia el package.json y el package-lock.json
-COPY package*.json ./
+# Instalación reproducible a partir del lockfile
+COPY package.json package-lock.json ./
+RUN npm ci
 
-# Instala las dependencias de la aplicación
-RUN npm install
-
-# Copia el resto del código fuente
 COPY . .
+RUN npm run build
 
-# Compila la aplicación Angular
-RUN npm run build --omit=dev
-
-# Etapa 2: Ejecutar la aplicación Angular universal
-FROM node:22
-
-# Establece el directorio de trabajo
+# Etapa 2: ejecución (el servidor Nitro ya incluye su propio node_modules)
+FROM node:22-slim
 WORKDIR /app
 
-# Copia los archivos compilados desde la etapa de construcción
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/package*.json ./
+ENV NODE_ENV=production \
+    PORT=3000 \
+    HOST=0.0.0.0
 
-# Instala las dependencias de producción
-RUN npm install
+COPY --from=build --chown=node:node /app/dist/analog ./
 
-# Exponer el puerto 3000
+USER node
 EXPOSE 3000
 
-WORKDIR /app/dist/analog/server
-
-# Comando para ejecutar la aplicación
-CMD ["node", "index.mjs"]
-
+CMD ["node", "server/index.mjs"]

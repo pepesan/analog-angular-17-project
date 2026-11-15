@@ -3,7 +3,6 @@ import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-about',
-  standalone: true,
   template: `
     <h2>Hello Analog</h2>
 

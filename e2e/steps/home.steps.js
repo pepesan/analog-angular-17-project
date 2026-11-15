@@ -1,14 +1,16 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import { strict as assert } from 'node:assert';
+import { baseUrl } from '../support/hooks.js';
 
 Given('I open the homepage', async function () {
-  await this.page.goto('http://127.0.0.1:4173');
+  await this.page.goto(baseUrl);
 });
 
 When('I increment the counter', async function () {
-  const counter = this.page.getByRole('button', { name: 'Count 0' });
+  const counter = this.page.getByRole('button', { name: /^Count \d+$/ });
+  const before = Number((await counter.innerText()).replace('Count ', ''));
   await counter.click();
-  await this.page.getByRole('button', { name: 'Count 1' }).waitFor();
+  await this.page.getByRole('button', { name: `Count ${before + 1}` }).waitFor();
 });
 
 When('I navigate to the About page', async function () {
