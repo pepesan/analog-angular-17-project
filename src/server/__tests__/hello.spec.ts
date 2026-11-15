@@ -1,4 +1,4 @@
-import handler from './hello';
+import handler from '../routes/v1/hello';
 
 describe('GET /api/v1/hello', () => {
   it('returns the hello message', async () => {

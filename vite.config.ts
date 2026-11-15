@@ -12,7 +12,13 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     mainFields: ['module'],
   },
-  plugins: [analog()],
+  plugins: [
+    analog({
+      ssr: true,
+      // SSG: estas rutas se generan como HTML estático durante `npm run build`.
+      prerender: { routes: ['/ssg'] },
+    }),
+  ],
   test: {
     globals: true,
     environment: 'jsdom',

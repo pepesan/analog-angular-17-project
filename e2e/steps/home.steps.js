@@ -43,3 +43,39 @@ Then('I should see the not-found page and a link back home', async function () {
   await this.page.getByRole('heading', { name: 'Page Not Found' }).waitFor();
   assert.equal(await this.page.getByRole('link', { name: 'Go Back Home' }).getAttribute('href'), '/');
 });
+
+When('I load the {string} page directly', async function (path) {
+  this.initialResponse = await this.page.goto(`${baseUrl}/${path}`);
+});
+
+When('I open the SSR example', async function () {
+  await this.page.getByRole('link', { name: 'Ejemplo SSR' }).click();
+});
+
+Then('the page was rendered on the {string}', async function (where) {
+  const label = this.page.getByTestId('rendered-on');
+  await label.waitFor();
+  assert.equal(await label.innerText(), where);
+});
+
+Then('the API time is shown', async function () {
+  await this.page.getByTestId('api-time').filter({ hasText: /^\d{4}-/ }).waitFor();
+});
+
+Then('the rendered date is kept after hydration', async function () {
+  const html = await this.initialResponse.text();
+  const served = html.match(/data-testid="rendered-at">([^<]+)</)?.[1];
+  assert.ok(served, 'the served HTML must contain the render date');
+  const shown = await this.page.getByTestId('rendered-at').innerText();
+  assert.equal(shown, served);
+});
+
+Then('the hydration page reports {string}', async function (value) {
+  await this.page.getByTestId('hydrated').filter({ hasText: value }).waitFor();
+});
+
+Then('the deferred block hydrates on interaction', async function () {
+  const button = this.page.getByRole('button', { name: /Bloque diferido/ });
+  await button.click();
+  await this.page.getByRole('button', { name: 'Bloque diferido: 1' }).waitFor();
+});
