@@ -20,6 +20,10 @@ Run `npm run build` to build the client/server project. Client artifacts are in 
 
 Run `npm run test` to run unit tests with [Vitest](https://vitest.dev).
 
+Run `npx playwright install chromium` once to install the browser, then `npm run e2e` to run the Cucumber/Playwright end-to-end scenarios.
+
+Run `npm run test:coverage` to run the Vitest suite and generate code-coverage reports in `coverage/`.
+
 ## Community
 
 - Visit and Star the [GitHub Repo](https://github.com/analogjs/analog)
