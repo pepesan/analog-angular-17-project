@@ -4,6 +4,9 @@ import { enableProdMode } from '@angular/core';
 import { bootstrapApplication, BootstrapContext } from '@angular/platform-browser';
 import { renderApplication } from '@angular/platform-server';
 
+import { provideServerContext } from '@analogjs/router/server';
+import { ServerContext } from '@analogjs/router/tokens';
+
 import { config } from './app/app.config.server';
 import { AppComponent } from './app/app.component';
 
@@ -15,10 +18,15 @@ export function bootstrap(context: BootstrapContext) {
   return bootstrapApplication(AppComponent, config, context);
 }
 
-export default async function render(url: string, document: string) {
+export default async function render(
+  url: string,
+  document: string,
+  serverContext: ServerContext,
+) {
   const html = await renderApplication(bootstrap, {
     document,
     url,
+    platformProviders: [provideServerContext(serverContext)],
   });
 
   return html;
