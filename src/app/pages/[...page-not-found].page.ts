@@ -3,7 +3,6 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-page-not-found',
-  standalone: true,
   imports: [RouterLink],
   template: `
     <h2>Page Not Found</h2>

@@ -24,6 +24,10 @@ Run `npx playwright install chromium` once to install the browser, then `npm run
 
 Run `npm run test:coverage` to run the Vitest suite and generate code-coverage reports in `coverage/`.
 
+## Docker
+
+`./00_create_and_push_image.sh [version]` builds and pushes `pepesan/analog-app` (requires a prior `docker login`); `./01_launch.sh` runs it on port 3002. The image is built with `npm ci` from `package-lock.json` and runs as the non-root `node` user.
+
 ## Community
 
 - Visit and Star the [GitHub Repo](https://github.com/analogjs/analog)
