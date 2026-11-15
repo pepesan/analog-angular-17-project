@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-home',
-  standalone: true,
   template: `
     <div>
       <a href="https://analogjs.org/" target="_blank">
@@ -22,7 +21,7 @@ import {RouterLink} from "@angular/router";
     <h3>The fullstack meta-framework for Angular!</h3>
 
     <div class="card">
-      <button type="button" (click)="increment()">Count {{ count }}</button>
+      <button type="button" (click)="increment()">Count {{ count() }}</button>
     </div>
 
     <p class="read-the-docs">
@@ -54,9 +53,9 @@ import {RouterLink} from "@angular/router";
   ]
 })
 export default class HomeComponent {
-  count = 0;
+  readonly count = signal(0);
 
   increment() {
-    this.count++;
+    this.count.update((value) => value + 1);
   }
 }
