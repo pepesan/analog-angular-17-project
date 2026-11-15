@@ -19,6 +19,10 @@ export default defineConfig(({ mode }) => ({
     setupFiles: ['src/test.ts'],
     include: ['**/*.spec.ts'],
     reporters: ['default'],
+    coverage: {
+      include: ['src/app/**/*.ts'],
+      exclude: ['src/app/**/*.spec.ts'],
+    },
   },
   define: {
     'import.meta.vitest': mode !== 'production',
